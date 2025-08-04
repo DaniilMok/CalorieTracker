@@ -117,6 +117,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\mavrr\Desktop\Проект\Product\CalorieCounterApp\sqlite-amalgamation-3500300;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,23 +129,39 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Activities.cpp" />
+    <ClCompile Include="ActivitiesDeleter.cpp" />
+    <ClCompile Include="ActivitiesInput.cpp" />
     <ClCompile Include="CalorieCounterApp.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\mavrr\Desktop\Проект\Product\sqlite-amalgamation-3500300</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="DailyKcalConfig.cpp" />
     <ClCompile Include="DataBase.cpp" />
     <ClCompile Include="Product.cpp" />
     <ClCompile Include="ProductDeleter.cpp" />
     <ClCompile Include="ProductInput.cpp" />
     <ClCompile Include="sqlite-amalgamation-3500300\sqlite3.c" />
+    <ClCompile Include="User.cpp" />
+    <ClCompile Include="UserCalorieCalculator.cpp" />
+    <ClCompile Include="UserDeleter.cpp" />
+    <ClCompile Include="UserInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\sqlite-amalgamation-3500300\sqlite3.h" />
     <ClInclude Include="..\sqlite-amalgamation-3500300\sqlite3ext.h" />
     <ClInclude Include="Activities.h" />
+    <ClInclude Include="ActivitiesDeleter.h" />
+    <ClInclude Include="ActivitiesInput.h" />
+    <ClInclude Include="DailyKcalConfig.h" />
     <ClInclude Include="DataBase.h" />
+    <ClInclude Include="InputHelper.h" />
     <ClInclude Include="Product.h" />
     <ClInclude Include="ProductDeleter.h" />
     <ClInclude Include="ProductInput.h" />
+    <ClInclude Include="User.h" />
+    <ClInclude Include="UserCalorieCalculator.h" />
+    <ClInclude Include="UserDeleter.h" />
+    <ClInclude Include="UserInput.h" />
+    <ClInclude Include="UserSelecter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

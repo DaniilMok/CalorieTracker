@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ACTIVITIES_H
+#define ACTIVITIES_H
 #include<string> // Указывает относительный путь к string
 
 using namespace std; // Используем пространство имен std для удобства
@@ -15,4 +16,6 @@ public:
 
 	void printActivities() const; // Метод для вывода информации об активности
 };
+
+#endif
 

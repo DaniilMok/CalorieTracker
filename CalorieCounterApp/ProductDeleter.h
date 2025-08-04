@@ -3,6 +3,11 @@
 #include <string>
 
 class ProductDeleter {
+private:
+    DataBase& db_;
+    void deleteByIdUI();
+    void deleteAllUI();
+
 public:
     explicit ProductDeleter(DataBase& db);
 
@@ -13,8 +18,4 @@ public:
     // Новый метод: полный пользовательский интерфейс удаления
     void runDeleteUI();
 
-private:
-    DataBase& db_;
-    void deleteByIdUI();
-    void deleteAllUI();
 };

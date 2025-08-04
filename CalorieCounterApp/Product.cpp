@@ -1,5 +1,6 @@
 #include "Product.h" // ”казывает относительный путь к Product.h
 #include <iostream> // ”казывает относительный путь к iostream
+
 using namespace std; // ѕространство имен std дл€ удобства
 
 Product::Product(string name, double kcal, double protein, double fat, double carbs) //  онструктор дл€ создани€ продукта с именем и питательными веществами

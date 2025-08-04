@@ -1,5 +1,4 @@
 #include "Activities.h" // ”казывает относительный путь к Activities.h
-#include<string> // ”казывает относительный путь к string
 #include <iostream> // ”казывает относительный путь к iostream дл€ ввода-вывода
 
 using namespace std; // »спользуем пространство имен std дл€ удобства
