@@ -3,13 +3,13 @@
 #include <limits>
 #include <string>
 
-template<typename T>
-T inputPositiveNumber(const std::string& prompt) {
-    T value;
+template<typename T> // Функция для ввода положительного числа с проверкой
+T inputPositiveNumber(const std::string& prompt) { // Шаблонная функция для ввода положительного числа
+	T value; // Переменная для хранения введенного значения
     while (true) {
         std::cout << prompt;
         std::cin >> value;
-        if (std::cin.fail() || value < 0) {
+		if (std::cin.fail() || value < 0) { // Проверяем, не произошла ли ошибка при вводе и является ли значение отрицательным
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Ошибка ввода, введите положительное число.\n";
@@ -20,13 +20,3 @@ T inputPositiveNumber(const std::string& prompt) {
         }
     }
 }
-
-/*void inputIdUser(int& userId) {
-    while (true)
-    {
-        if (userId == 0) {
-            cout << "Пожалуйста, выберите пользователя перед показом информации.\n";
-            continue; // Пропускаем дальнейшие действия, если пользователь не выбран
-        }
-    }
-}*/

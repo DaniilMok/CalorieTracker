@@ -2,83 +2,81 @@
 #include <iostream>
 #include <limits>
 
-using namespace std;
+ActivitiesDeleter::ActivitiesDeleter(DataBase& db) : db(db) {} // Конструктор, принимающий ссылку на объект базы данных
 
-ActivitiesDeleter::ActivitiesDeleter(DataBase& db) : db(db) {} 
-
-bool ActivitiesDeleter::deleteActivityById(int id) {
+bool ActivitiesDeleter::deleteActivityById(int id) { // Функция передающий ID активности для удаления
 	return db.deleteActivityById(id);
 }
 
-bool ActivitiesDeleter::deleteAllActivities() {
+bool ActivitiesDeleter::deleteAllActivities() { // Функция для удаления всех активностей из базы данных
 	return db.deleteAllActivities();
 }
 
-void ActivitiesDeleter::runDeleteUI() {
-	cout << "1 - Удалить активность по ID\n";
-	cout << "2 - Удалить все активности\n";
+void ActivitiesDeleter::runDeleteUI() { // Функция для запуска интерфейса удаления активностей
+	std::cout << "1 - Удалить активность по ID\n";
+	std::cout << "2 - Удалить все активности\n";
 	int choice = 0;
-	while (true) {
-		cout << "Выбор: ";
-		cin >> choice;
-		if (cin.fail()) {
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			cout << "Вы не ввели ничего. Пожалуйста, выберите вариант из меню.\n";
-			continue;
+	while (true) { // Цикл для выбора действия
+		std::cout << "Выбор: ";
+		std::cin >> choice;
+		if (std::cin.fail()) { // Проверка на ввод некорректных данных
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << "Вы не ввели ничего. Пожалуйста, выберите вариант из меню.\n";
+			continue; 
 		}
 		if (choice == 1) {
-			deleteByIdUI();
+			deleteByIdUI(); // Вызов Функцияа для удаления активности по ID
 			break;
 		}
 		else if (choice == 2) {
-			deleteAllUI();
+			deleteAllUI(); // Вызов Функцияа для удаления всех активностей
 			break;
 		}
 		else {
-			cout << "Неверный выбор. Пожалуйста, выберите 1 или 2.\n";
+			std::cout << "Неверный выбор. Пожалуйста, выберите 1 или 2.\n";
 		}
 	}
 }
 
-void ActivitiesDeleter::deleteByIdUI() {
-	int passed = 0;
+void ActivitiesDeleter::deleteByIdUI() { // Функция для удаления активности по ID через пользовательский интерфейс
+	int passed = 0; // Переменная для отслеживания успешного выполнения операции 
 	do {
 		int id;
-		cout << "Введите ID для удаления: ";
-		cin >> id;
-		if (cin.fail()) {
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			cout << "Вы не ввели ничего.\n";
+		std::cout << "Введите ID для удаления: ";
+		std::cin >> id;
+		if (std::cin.fail()) { // Проверка на ввод некорректных данных
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << "Вы не ввели ничего.\n";
 			continue;
 		}
-		if (deleteActivityById(id))
-			cout << "Удалено.\n";
+		if (deleteActivityById(id)) // Вызов Функцияа для удаления активности по ID
+			std::cout << "Удалено.\n";
 		else
-			cout << "Активность с таким ID не найдена.\n";
-		passed++;
-	} while (passed < 1);
+			std::cout << "Активность с таким ID не найдена.\n";
+		passed = 1;
+	} while (passed != 1);
 }
 
-void ActivitiesDeleter::deleteAllUI() {
-	int passed = 0;
+void ActivitiesDeleter::deleteAllUI() { // Функция для удаления всех активностей через пользовательский интерфейс
+	int passed = 0; // Переменная для отслеживания успешного выполнения операции
 	do {
-		cout << "Вы уверены, что хотите удалить все активности? (y/n): ";
+		std::cout << "Вы уверены, что хотите удалить все активности? (y/n): ";
 		char confirm;
-		cin >> confirm;
-		if (cin.fail()) {
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			cout << "Вы не ввели ничего.\n";
+		std::cin >> confirm;
+		if (std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << "Вы не ввели ничего.\n";
 			continue;
 		}
-		if (confirm == 'y' || confirm == 'Y') {
-			if (deleteAllActivities())
-				cout << "Все активности удалены.\n";
+		if (confirm == 'y' || confirm == 'Y') { // Проверка на подтверждение удаления
+			if (deleteAllActivities()) // Вызов Функцияа для удаления всех активностей
+				std::cout << "Все активности удалены.\n";
 			else
-				cout << "Ошибка при удалении активностей.\n";
+				std::cout << "Ошибка при удалении активностей.\n";
 		}
-		passed++;
-	} while (passed < 1);
+		passed = 1;
+	} while (passed != 1);
 }

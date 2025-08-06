@@ -1,8 +1,8 @@
 #pragma once
-#include "User.h"  // Класс с данными пользователя
+#include "User.h"
 #include <string>
 
 class UserInput {
 public:
-    User inputUser();
+	User inputUser(); // Функция для ввода данных пользователя
 };

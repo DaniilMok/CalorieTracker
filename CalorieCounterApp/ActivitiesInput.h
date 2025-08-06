@@ -3,6 +3,6 @@
 
 class ActivitiesInput {
 public:
-    Activities inputActivities();  // Метод для ввода активности
+    Activities inputActivities();  // Функция для ввода активности
 };
 

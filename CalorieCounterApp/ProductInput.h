@@ -3,5 +3,5 @@
 
 class ProductInput {
 public:
-    Product inputProduct();
+	Product inputProduct(); // Функция для ввода информации о продукте
 };

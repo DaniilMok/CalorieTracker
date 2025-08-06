@@ -1,12 +1,12 @@
-#include "DataBase.h" // Указывает относительный путь к DataBase.h
-#include <iostream> // Указывает относительный путь к iostream
-#include <vector> // Указывает относительный путь к vector для работы с векторами
+// Оптимизировать код!
 
-using namespace std; // Пространство имен std для удобства
+#include "DataBase.h" 
+#include <iostream>
+#include <vector> 
 
 DataBase::DataBase(const char* filename) { // Конструктор принимает имя файла базы данных
 	if (sqlite3_open(filename, &db)) { // Открываем базу данных
-		cerr << "Ошибка подключения: " << sqlite3_errmsg(db) << "\n"; // Если не удалось открыть базу данных, выводим сообщение об ошибке
+		std::cerr << "Ошибка подключения: " << sqlite3_errmsg(db) << "\n"; // Если не удалось открыть базу данных, выводим сообщение об ошибке
 		db = nullptr; // Устанавливаем указатель на базу данных в nullptr
     }
 }
@@ -32,45 +32,39 @@ bool DataBase::createTableUsers() { // Функция для создания таблицы пользователе
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql, nullptr, nullptr, &errMsg); // Выполняем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка создания таблицы: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка создания таблицы: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 		return false; // Возвращаем false, если таблица не создана
 	}
 	return true; // Возвращаем true, если таблица успешно создана
 }
 
-int DataBase::isUserExists(int actualCount) {
-	const char* sql = R"(
+int DataBase::isUserExists(int actualCount) { // Функция для проверки существования пользователя
+	// SQL-запрос для подсчета количества пользователей в таблице users
+	const char* sql = R"( 
 		SELECT COUNT(*) FROM users;
 	)";
 	sqlite3_stmt* stmt = nullptr; // Указатель на подготовленный SQL-запрос
-	if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-		cerr << "Ошибка подготовки запроса: " << sqlite3_errmsg(db) << "\n";
-		return -1;
+	if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) { // Если запрос не подготовлен успешно, выводим сообщение об ошибке
+		std::cerr << "Ошибка подготовки запроса: " << sqlite3_errmsg(db) << "\n";
+		return -1; // Возвращаем -1 в случае ошибки подготовки запроса
 	}
-	sqlite3_bind_int(stmt, 1, actualCount);
-	if (sqlite3_step(stmt) != SQLITE_ROW) {
-		cerr << "Ошибка выполнения запроса: " << sqlite3_errmsg(db) << "\n";
-		sqlite3_finalize(stmt);
-		return -1;
+	sqlite3_bind_int(stmt, 1, actualCount); // Привязываем параметр actualCount к подготовленному запросу
+	if (sqlite3_step(stmt) != SQLITE_ROW) { // Если запрос не выполнен успешно, выводим сообщение об ошибке
+		std::cerr << "Ошибка выполнения запроса: " << sqlite3_errmsg(db) << "\n";
+		sqlite3_finalize(stmt); // Освобождаем подготовленный запрос
+		return -1; // Возвращаем -1 в случае ошибки выполнения запроса
 	}
 	actualCount = sqlite3_column_int(stmt, 0); // Переменная для хранения количества пользователей
 	sqlite3_finalize(stmt); // Освобождаем подготовленный запрос
-	if (actualCount == 0) { // Если количество пользователей равно 0
-		return actualCount; // Возвращаем 0, если пользователь не найден
-	} 
-	else if (actualCount == 1) {
-		return actualCount; // Возвращаем 1, если пользователь найден
-	}
-	else if (actualCount > 1) {
-		return actualCount; // Возвращаем количество найденных пользователей
-	}
-	else {
+	if (actualCount >= 0) // Если количество пользователей равно или больше нуля
+		return actualCount;
+	else
 		return -1; // Возвращаем -1 в случае неизвестной ошибки
-	}
 }
 
-bool DataBase::createTableInfoUsers() {
+bool DataBase::createTableInfoUsers() { // Функция для создания таблицы информации о пользователях
+	// SQL-запрос для создания таблицы информации о пользователях, если она не существует
 	const char* sql = R"(
 		CREATE TABLE IF NOT EXISTS usersInfo (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -89,7 +83,7 @@ bool DataBase::createTableInfoUsers() {
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql, nullptr, nullptr, &errMsg); // Выполняем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка создания таблицы: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка создания таблицы: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 		return false; // Возвращаем false, если таблица не создана
 	}
@@ -111,7 +105,7 @@ bool DataBase::createTableUserActivities() { // Функция для создания таблицы акт
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql, nullptr, nullptr, &errMsg); // Выполняем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка создания таблицы: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка создания таблицы: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 		return false; // Возвращаем false, если таблица не создана
 	}
@@ -133,7 +127,7 @@ bool DataBase::createTableUserProducts() { // Функция для создания таблицы проду
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql, nullptr, nullptr, &errMsg); // Выполняем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка создания таблицы: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка создания таблицы: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 		return false; // Возвращаем false, если таблица не создана
 	}
@@ -155,7 +149,7 @@ bool DataBase::createTableProducts() { // Функция для создания таблицы продуктов
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql, nullptr, nullptr, &errMsg); // Выполняем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка создания таблицы: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка создания таблицы: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 		return false; // Возвращаем false, если таблица не создана
     }
@@ -174,49 +168,78 @@ bool DataBase::createTableActivities() { // Функция для создания таблицы активно
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql, nullptr, nullptr, &errMsg); // Выполняем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка создания таблицы: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка создания таблицы: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 		return false; // Возвращаем false, если таблица не создана
     }
 	return true; // Возвращаем true, если таблица успешно создана
 }
 
-bool DataBase::addUser(const User& user) {
+bool DataBase::addUser(const User& user) { // Функция для добавления пользователя в базу данных
+	// SQL-запрос для вставки нового пользователя в таблицу users с использованием подготовленного выражения
 	const char* sql = "INSERT INTO users (name, gender, years, growth, weight, activity_type, food_type) VALUES (?, ?, ?, ?, ?, ?, ?);";
-	sqlite3_stmt* stmt;
+	sqlite3_stmt* stmt; // Указатель на подготовленный SQL-запрос
 
-	int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
-	if (rc != SQLITE_OK) {
+	int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr); // Подготавливаем SQL-запрос
+	if (rc != SQLITE_OK) { // Если запрос не подготовлен успешно, выводим сообщение об ошибке
 		std::cerr << "Ошибка подготовки запроса: " << sqlite3_errmsg(db) << std::endl;
-		return false;
+		return false; // Возвращаем false, если запрос не подготовлен
 	}
 
-	sqlite3_bind_text(stmt, 1, user.name.c_str(), -1, SQLITE_TRANSIENT);
-	sqlite3_bind_text(stmt, 2, user.gender.c_str(), -1, SQLITE_TRANSIENT);
-	sqlite3_bind_double(stmt, 3, user.years);         // years - тип REAL
-	sqlite3_bind_double(stmt, 4, user.growth);        // growth - тип REAL
-	sqlite3_bind_double(stmt, 5, user.weight);        // weight - тип REAL
-	sqlite3_bind_text(stmt, 6, user.activity_type.c_str(), -1, SQLITE_TRANSIENT);
-	sqlite3_bind_text(stmt, 7, user.food_type.c_str(), -1, SQLITE_TRANSIENT);
+	sqlite3_bind_text(stmt, 1, user.name.c_str(), -1, SQLITE_TRANSIENT); // Привязываем имя пользователя к подготовленному запросу
+	sqlite3_bind_text(stmt, 2, user.gender.c_str(), -1, SQLITE_TRANSIENT); // Привязываем пол пользователя к подготовленному запросу
+	sqlite3_bind_double(stmt, 3, user.years);         // Привязываем возраст пользователя к подготовленному запросу 
+	sqlite3_bind_double(stmt, 4, user.growth);        // Привязываем рост пользователя к подготовленному запросу
+	sqlite3_bind_double(stmt, 5, user.weight);        // Привязываем вес пользователя к подготовленному запросу
+	sqlite3_bind_text(stmt, 6, user.activity_type.c_str(), -1, SQLITE_TRANSIENT); // Привязываем тип активности пользователя к подготовленному запросу
+	sqlite3_bind_text(stmt, 7, user.food_type.c_str(), -1, SQLITE_TRANSIENT); // Привязываем тип питания пользователя к подготовленному запросу
 
-	rc = sqlite3_step(stmt);
-	if (rc != SQLITE_DONE) {
+	rc = sqlite3_step(stmt); // Выполняем подготовленный SQL-запрос
+	if (rc != SQLITE_DONE) { // Если запрос не выполнен успешно, выводим сообщение об ошибке
 		std::cerr << "Ошибка выполнения запроса: " << sqlite3_errmsg(db) << std::endl;
-		sqlite3_finalize(stmt);
-		return false;
+		sqlite3_finalize(stmt); // Освобождаем подготовленный запрос
+		return false; // Возвращаем false, если пользователь не добавлен
 	}
 
-	sqlite3_finalize(stmt);
-	return true;
+	sqlite3_finalize(stmt); // Освобождаем подготовленный запрос
+	return true; // Возвращаем true, если пользователь успешно добавлен
 }
 
-bool DataBase::deleteUser() {
+// Функция не работает!!!
+bool DataBase::editUser(const std::string& columnName, const std::string& value) { // Функция для редактирования информации о пользователе
+	// SQL-запрос для обновления информации о пользователе
+	std::string sql = "UPDATE users SET " + columnName + " = ? WHERE id = ?";
+
+	sqlite3_stmt* stmt = nullptr; // Указатель на подготовленный SQL-запрос
+	int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr); // Подготавливаем SQL-запрос
+
+	if (rc != SQLITE_OK) { // Если запрос не подготовлен успешно, выводим сообщение об ошибке
+		std::cerr << "Ошибка подготовки запроса: " << sqlite3_errmsg(db) << "\n"; 
+		return false; // Возвращаем false, если запрос не подготовлен
+	}
+
+	sqlite3_bind_text(stmt, 1, value.c_str(), -1, SQLITE_TRANSIENT); // Привязываем новое значение к подготовленному запросу
+	sqlite3_bind_int(stmt, 2, 1); // Привязываем ID пользователя к подготовленному запросу
+
+	rc = sqlite3_step(stmt); // Выполняем подготовленный SQL-запрос
+	if (rc != SQLITE_DONE) { // Если запрос не выполнен успешно, выводим сообщение об ошибке
+		std::cerr << "Ошибка обновления: " << sqlite3_errmsg(db) << "\n";
+		sqlite3_finalize(stmt); // Освобождаем подготовленный запрос
+		return false; // Возвращаем false, если информация о пользователе не обновлена
+	}
+
+	sqlite3_finalize(stmt); // Освобождаем подготовленный запрос
+	return true; // Возвращаем true, если информация о пользователе успешно обновлена
+}
+
+
+bool DataBase::deleteUser() { // Функция для удаления таблицы пользователей
 	// SQL-запрос для удаления таблицы пользователей
 	const char* sql = "DROP TABLE IF EXISTS users;";
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql, nullptr, nullptr, &errMsg); // Выполняем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка удаления таблицы: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка удаления таблицы: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 		return false; // Возвращаем false, если таблица не удалена
 	}
@@ -229,7 +252,7 @@ bool DataBase::addProduct(const Product& p) { // Функция для добавления продукта
 	sqlite3_stmt* stmt = nullptr; // Указатель на подготовленный SQL-запрос
 	int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr); // Подготавливаем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не подготовлен успешно
-		cerr << "Ошибка подготовки запроса: " << sqlite3_errmsg(db) << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка подготовки запроса: " << sqlite3_errmsg(db) << "\n";
 		return false; // Возвращаем false, если запрос не подготовлен
 	}
 	// Привязываем параметры
@@ -241,23 +264,23 @@ bool DataBase::addProduct(const Product& p) { // Функция для добавления продукта
 
 	rc = sqlite3_step(stmt); // Выполняем подготовленный SQL-запрос
 	if (rc != SQLITE_DONE) { // Если запрос не выполнен успешно
-		cerr << "Ошибка вставки: " << sqlite3_errmsg(db) << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка вставки: " << sqlite3_errmsg(db) << "\n";
 		sqlite3_finalize(stmt); // Освобождаем подготовленный запрос
 		return false; // Возвращаем false, если продукт не добавлен
 	}
 	else
-		cout << "Продукт успешно добавлен.\n"; // Выводим сообщение об успешном добавлении продукта
+		std::cout << "Продукт успешно добавлен.\n";
 	sqlite3_finalize(stmt); // Освобождаем подготовленный запрос
 	return true; // Возвращаем true, если продукт успешно добавлен
 }
 
 bool DataBase::deleteProductById(int id) { // Функция для удаления продукта по ID
 	// SQL-запрос для удаления продукта из таблицы products по ID
-    string sql = "DELETE FROM products WHERE id = " + to_string(id) + ";";
+	std::string sql = "DELETE FROM products WHERE id = " + std::to_string(id) + ";";
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg); // Выполняем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка удаления: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка удаления: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 		return false; // Возвращаем false, если продукт не удален
     }
@@ -269,7 +292,7 @@ bool DataBase::deleteAllProducts() { // Функция для удаления всех продуктов из б
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql, nullptr, nullptr, &errMsg); // Выполняем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка при удалении всех продуктов: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка при удалении всех продуктов: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 		return false; // Возвращаем false, если продукты не удалены
     }
@@ -277,18 +300,17 @@ bool DataBase::deleteAllProducts() { // Функция для удаления всех продуктов из б
 }
 
 
-vector<Product> DataBase::getAllProducts() { // Функция для получения всех продуктов из базы данных
-	vector<Product> result; // Вектор для хранения продуктов
-
+std::vector<Product> DataBase::getAllProducts() { // Функция для получения всех продуктов из базы данных
+	std::vector<Product> result; // Вектор для хранения продуктов
 	const char* sql = "SELECT * FROM products;"; // SQL-запрос для получения всех продуктов из таблицы products
 	auto callback = [](void* data, int argc, char** argv, char**) -> int { // Функция обратного вызова для обработки результатов запроса
-		auto* vec = static_cast<vector<Product>*>(data); // Приводим указатель data к типу vector<Product>*
-		int id = stoi(argv[0]); // Считываем ID продукта
-		string name = argv[1]; // Считываем название продукта
-		double kcal = stod(argv[2]); // Считываем калории на 100 г
-		double protein = stod(argv[3]); // Считываем количество белка
-		double fat = stod(argv[4]); // Считываем количество жира
-		double carbs = stod(argv[5]); // Считываем количество углеводов
+		auto* vec = static_cast<std::vector<Product>*>(data); // Приводим указатель data к типу vector<Product>*
+		int id = std::stoi(argv[0]); // Считываем ID продукта
+		std::string name = argv[1]; // Считываем название продукта
+		double kcal = std::stod(argv[2]); // Считываем калории на 100 г
+		double protein = std::stod(argv[3]); // Считываем количество белка
+		double fat = std::stod(argv[4]); // Считываем количество жира
+		double carbs = std::stod(argv[5]); // Считываем количество углеводов
 
 		vec->emplace_back(id, name, kcal, protein, fat, carbs); // Добавляем новый продукт в вектор
 		return 0; // Возвращаем 0 для продолжения обработки
@@ -297,20 +319,20 @@ vector<Product> DataBase::getAllProducts() { // Функция для получения всех проду
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql, callback, &result, &errMsg); // Выполняем SQL-запрос с функцией обратного вызова
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка SELECT: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка SELECT: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
     }
 
 	return result; // Возвращаем вектор с продуктами
 }
 
-bool DataBase::addActivities(const Activities& a) {
+bool DataBase::addActivities(const Activities& a) { // Функция для добавления активности в базу данных
 	// SQL-запрос для вставки новой активности в таблицу activities
 	const char* sql = "INSERT INTO activities (name, calories_burned_per_minute) VALUES (?, ?);";
 	sqlite3_stmt* stmt = nullptr; // Указатель на подготовленный SQL-запрос
 	int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr); // Подготавливаем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не подготовлен успешно
-		cerr << "Ошибка подготовки запроса: " << sqlite3_errmsg(db) << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка подготовки запроса: " << sqlite3_errmsg(db) << "\n";
 		return false; // Возвращаем false, если запрос не подготовлен
 	}
 	// Привязываем параметры
@@ -319,22 +341,22 @@ bool DataBase::addActivities(const Activities& a) {
 
 	rc = sqlite3_step(stmt); // Выполняем подготовленный SQL-запрос
 	if (rc != SQLITE_DONE) { // Если запрос не выполнен успешно
-		cerr << "Ошибка вставки: " << sqlite3_errmsg(db) << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка вставки: " << sqlite3_errmsg(db) << "\n";
 		sqlite3_finalize(stmt); // Освобождаем подготовленный запрос
 		return false; // Возвращаем false, если активность не добавлена
 	}
 	else
-		cout << "Активность успешно добавлена.\n"; // Выводим сообщение об успешном добавлении активности
+		std::cout << "Активность успешно добавлена.\n";
 	sqlite3_finalize(stmt); // Освобождаем подготовленный запрос
 	return true; // Возвращаем true, если активность успешно добавлена
 }
 
 bool DataBase::deleteActivityById(int id) { // Функция для удаления активности по ID
-	string sql = "DELETE FROM activities WHERE id = " + to_string(id) + ";"; // SQL-запрос для удаления активности по ID
+	std::string sql = "DELETE FROM activities WHERE id = " + std::to_string(id) + ";"; // SQL-запрос для удаления активности по ID
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg); // Выполняем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка удаления: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка удаления: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 		return false; // Возвращаем false, если активность не удалена
 	}
@@ -346,28 +368,28 @@ bool DataBase::deleteAllActivities() { // Функция для удаления всех активностей 
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql, nullptr, nullptr, &errMsg); // Выполняем SQL-запрос
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка при удалении всех активностей: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка при удалении всех активностей: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 		return false; // Возвращаем false, если активности не удалены
 	}
 	return true; // Возвращаем true, если все активности успешно удалены
 }
 
-vector<Activities> DataBase::getAllActivities() { // Функция для получения всех активностей из базы данных
-	vector<Activities> result; // Вектор для хранения активностей
+std::vector<Activities> DataBase::getAllActivities() { // Функция для получения всех активностей из базы данных
+	std::vector<Activities> result; // Вектор для хранения активностей
 	const char* sql = "SELECT * FROM activities;"; // SQL-запрос для получения всех активностей из таблицы activities
 	auto callback = [](void* data, int argc, char** argv, char**) -> int { // Функция обратного вызова для обработки результатов запроса
-		auto* vec = static_cast<vector<Activities>*>(data); // Приводим указатель data к типу vector<Activities>*
-		int id = stoi(argv[0]); // Считываем ID активности
-		string name = argv[1]; // Считываем название активности
-		double calBurn = stod(argv[2]); // Считываем калории, сжигаемые за минуту
+		auto* vec = static_cast<std::vector<Activities>*>(data); // Приводим указатель data к типу vector<Activities>*
+		int id = std::stoi(argv[0]); // Считываем ID активности
+		std::string name = argv[1]; // Считываем название активности
+		double calBurn = std::stod(argv[2]); // Считываем калории, сжигаемые за минуту
 		vec->emplace_back(id, name, calBurn); // Добавляем новую активность в вектор
 		return 0; // Возвращаем 0 для продолжения обработки
 	};
 	char* errMsg = nullptr; // Переменная для хранения сообщения об ошибке
 	int rc = sqlite3_exec(db, sql, callback, &result, &errMsg); // Выполняем SQL-запрос с функцией обратного вызова
 	if (rc != SQLITE_OK) { // Если запрос не выполнен успешно
-		cerr << "Ошибка SELECT: " << errMsg << "\n"; // Выводим сообщение об ошибке
+		std::cerr << "Ошибка SELECT: " << errMsg << "\n";
 		sqlite3_free(errMsg); // Освобождаем память, занятую сообщением об ошибке
 	}
 	return result; // Возвращаем вектор с активностями

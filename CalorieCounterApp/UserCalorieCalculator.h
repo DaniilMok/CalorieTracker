@@ -1,3 +1,5 @@
+// Реализовать!!!
+
 #pragma once
 #include "DataBase.h"
 #include <string>
@@ -13,13 +15,13 @@ class UserCalorieCalculator
 		int userWeight; // Вес пользователя
 		std::string activityType; // Тип активности пользователя
 		std::string foodType; // Тип питания пользователя
-		bool addFoodToUser(int userId, const std::string& foodName, int foodCalories); // Метод для добавления продукта к пользователю
-		bool addActivityToUser(int userId, const std::string& activityName, int activityCalories); // Метод для добавления активности к пользователю
+		bool addFoodToUser(int userId, const std::string& foodName, int foodCalories); // Функция для добавления продукта к пользователю
+		bool addActivityToUser(int userId, const std::string& activityName, int activityCalories); // Функция для добавления активности к пользователю
 	public:
 		explicit UserCalorieCalculator(DataBase& db); // Конструктор, принимающий ссылку на объект базы данных
-		void calculateCalories(); // Метод для расчета калорий пользователя
-		void showUserInfo(); // Метод для отображения информации о пользователе
-		void updateUserInfo(); // Метод для обновления информации о пользователе
-		void runCalculatorUI(); // Метод для запуска пользовательского интерфейса калькулятора калорий
+		void calculateCalories(); // Функция для расчета калорий пользователя
+		void showUserInfo(); // Функция для отображения информации о пользователе
+		void updateUserInfo(); // Функция для обновления информации о пользователе
+		void runCalculatorUI(); // Функция для запуска пользовательского интерфейса калькулятора калорий
 };
 

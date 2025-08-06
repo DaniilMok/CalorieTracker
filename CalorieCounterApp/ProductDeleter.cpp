@@ -2,68 +2,66 @@
 #include <iostream>
 #include <limits>
 
-using namespace std;
+ProductDeleter::ProductDeleter(DataBase& db) : db_(db) {} // Конструктор принимает ссылку на базу данных
 
-ProductDeleter::ProductDeleter(DataBase& db) : db_(db) {}
-
-bool ProductDeleter::deleteById(int id) {
+bool ProductDeleter::deleteById(int id) { // Функция для удаления продукта по ID
     return db_.deleteProductById(id);
 }
 
-bool ProductDeleter::deleteAll() {
+bool ProductDeleter::deleteAll() { // Функция для удаления всех продуктов
     return db_.deleteAllProducts();
 }
 
-void ProductDeleter::runDeleteUI() {
-    cout << "1 - Удалить продукт по ID\n";
-    cout << "2 - Удалить все продукты\n";
-    int choice = 0;
-    while (true) {
-        cout << "Выбор: ";
-        cin >> choice;
-        if (cin.fail()) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Вы не ввели ничего. Пожалуйста, выберите вариант из меню.\n";
-            continue;
+void ProductDeleter::runDeleteUI() { // Функция для запуска пользовательского интерфейса удаления продуктов
+    std::cout << "1 - Удалить продукт по ID\n";
+    std::cout << "2 - Удалить все продукты\n";
+    int choice = 0; 
+	while (true) { // Цикл для выбора действия
+        std::cout << "Выбор: ";
+        std::cin >> choice;
+		if (std::cin.fail()) { // Проверка не произошла ли ошибка при вводе
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Вы не ввели ничего. Пожалуйста, выберите вариант из меню.\n";
+            continue; 
         }
         if (choice == 1) {
-            deleteByIdUI();
+			deleteByIdUI(); // Функция для запуска интерфейса удаления продукта по ID
             break;
         }
         else if (choice == 2) {
-            deleteAllUI();
+			deleteAllUI(); // Функция для запуска интерфейса удаления всех продуктов
             break;
         }
         else {
-            cout << "Неверный выбор. Пожалуйста, выберите 1 или 2.\n";
+            std::cout << "Неверный выбор. Пожалуйста, выберите 1 или 2.\n";
         }
     }
 }
 
-void ProductDeleter::deleteByIdUI() {
-    int passed = 0;
+void ProductDeleter::deleteByIdUI() { // Функция для отображения интерфейса удаления продукта по ID
+	int passed = 0; // Переменная для отслеживания
     do {
         int id;
-        cout << "Введите ID для удаления: ";
-        cin >> id;
-        if (cin.fail()) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Вы не ввели ничего.\n";
+        std::cout << "Введите ID для удаления: ";
+        std::cin >> id;
+		if (std::cin.fail()) { // Проверка не произошла ли ошибка при вводе
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Вы не ввели ничего.\n";
             continue;
         }
-        if (deleteById(id))
-            cout << "Удалено.\n";
+		if (deleteById(id)) // Попытка удалить продукт по ID
+            std::cout << "Удалено.\n";
         else
-            cout << "Продукт с таким ID не найден.\n";
+            std::cout << "Продукт с таким ID не найден.\n";
 
-        string confirm;
-        while (true) {
-            cout << "Удалить еще один продукт? (y/n): ";
-            cin >> confirm;
-            if (confirm.empty()) {
-                cout << "Выбор не может быть пустым. Пожалуйста, введите 'y' или 'n'.\n";
+		std::string confirm; // Переменная для подтверждения удаления
+		while (true) { // Цикл для подтверждения удаления
+            std::cout << "Удалить еще один продукт? (y/n): ";
+            std::cin >> confirm;
+			if (confirm.empty()) { // Проверка на пустой ввод
+                std::cout << "Выбор не может быть пустым. Пожалуйста, введите 'y' или 'n'.\n";
                 continue;
             }
             else if (confirm == "y" || confirm == "Y") {
@@ -75,32 +73,32 @@ void ProductDeleter::deleteByIdUI() {
                 break;
             }
             else {
-                cout << "Неверный ввод. Пожалуйста, введите 'y' или 'n'.\n";
+                std::cout << "Неверный ввод. Пожалуйста, введите 'y' или 'n'.\n";
             }
         }
     } while (passed != 1);
 }
 
-void ProductDeleter::deleteAllUI() {
-    string confirm;
+void ProductDeleter::deleteAllUI() { // Функция для отображения интерфейса удаления всех продуктов
+	std::string confirm; // Переменная для подтверждения удаления
     while (true) {
-        cout << "Удалить все продукты? (y/n): ";
-        cin >> confirm;
-        if (confirm.empty()) {
-            cout << "Выбор не может быть пустым. Пожалуйста, введите 'y' или 'n'.\n";
+        std::cout << "Удалить все продукты? (y/n): ";
+        std::cin >> confirm;
+		if (confirm.empty()) { // Проверка на пустой ввод   
+            std::cout << "Выбор не может быть пустым. Пожалуйста, введите 'y' или 'n'.\n";
             continue;
         }
         else if (confirm == "y" || confirm == "Y") {
-            if (deleteAll())
-                cout << "Все продукты удалены.\n";
+			if (deleteAll()) // Попытка удалить все продукты    
+                std::cout << "Все продукты удалены.\n";
             break;
         }
         else if (confirm == "n" || confirm == "N") {
-            cout << "Удаление отменено.\n";
+            std::cout << "Удаление отменено.\n";
             break;
         }
         else {
-            cout << "Неверный ввод. Пожалуйста, введите 'y' или 'n'.\n";
+            std::cout << "Неверный ввод. Пожалуйста, введите 'y' или 'n'.\n";
         }
     }
 }

@@ -1,16 +1,16 @@
 #include "UserInput.h"
-#include "InputHelper.h" // Подключаем InputHelper для ввода чисел
+#include "InputHelper.h"
 #include <iostream>
 #include <limits>
 
 using namespace std;
 
-User UserInput::inputUser() {
-	string gender;
-	int choice_gender;
+User UserInput::inputUser() { // Функция для ввода данных пользователя
+	string gender; // Переменная для хранения пола пользователя
+	int choice_gender; // Переменная для выбора пола пользователя
 	do
 	{
-		do {
+		do { // Цикл для ввода пола пользователя
 			cout << "Введите пол (1 - мужской, 2 - женский): ";
 			cin >> choice_gender;
 			if (cin.fail()) {
@@ -31,10 +31,10 @@ User UserInput::inputUser() {
 				gender.clear(); // Очищаем строку для повторного ввода
 				break;
 			}
-		} while (gender.empty());
+		} while (gender.empty()); // Продолжаем цикл, пока не введен корректный пол
 	} while (gender.empty());
 
-	string name;
+	string name; // Переменная для хранения имени пользователя
 	cout << "Введите имя пользователя: ";
 	cin.ignore();
 	getline(cin, name);
@@ -42,6 +42,7 @@ User UserInput::inputUser() {
 		cout << "Имя не может быть пустым. Пожалуйста, введите имя: ";
 		getline(cin, name);
 	}
+	// Ввод возраста, роста и веса пользователя
 	double years = inputPositiveNumber<double>("Введите возраст (в годах): ");
 	double growth = inputPositiveNumber<double>("Введите рост (в см): ");
 	double weight = inputPositiveNumber<double>("Введите вес (в кг): ");
@@ -50,7 +51,7 @@ User UserInput::inputUser() {
 	int choice_activity;
 	do
 	{
-		do {
+		do { // Цикл для ввода типа активности пользователя
 		cout << "Введите тип активности (1 - низкая, 2 - средняя, 3 - высокая): ";
 		cin >> choice_activity;
 		if (cin.fail()) {
@@ -81,7 +82,7 @@ User UserInput::inputUser() {
 	string food_type;
 	do
 	{
-		do {
+		do { // Цикл для ввода типа питания пользователя
 		cout << "Введите тип питания (1 - с мясом, 2 - без мяса): ";
 		cin >> choice_food;		
 		if (cin.fail()) {

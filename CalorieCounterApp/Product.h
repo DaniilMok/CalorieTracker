@@ -1,23 +1,18 @@
-#ifndef PRODUCT_H
-#define PRODUCT_H
+#pragma once
 #include <string>
-
-using namespace std;
 
 class Product
 {
-public:
-    int id;
-    string name;
+public: // ѕеременные id , им€, калории, белки, жиры и углеводы
+    int id; 
+    std::string name;
     double kcal_per_100g;
     double protein;
     double fat;
     double carbs;
 
-    Product(string name, double kcal, double protein, double fat, double carbs);
-    Product(int id, string name, double kcal, double protein, double fat, double carbs);
+	Product(std::string name, double kcal, double protein, double fat, double carbs); //  онструктор дл€ создани€ продукта с именем и питательными веществами
+	Product(int id, std::string name, double kcal, double protein, double fat, double carbs); //  онструктор дл€ создани€ продукта с ID, c именем и питательными веществами
 
-    void printProducts() const;
+	void printProducts() const; // ‘ункци€ дл€ вывода информации о продукте
 };
-
-#endif
